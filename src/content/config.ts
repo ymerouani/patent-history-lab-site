@@ -65,6 +65,38 @@ const postCollection = defineCollection({
   }),
 });
 
+const projectCollection = defineCollection({
+  loader: glob({ pattern: ['*.md', '*.mdx'], base: 'src/projects/posts' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    image: z.string(),
+    size: z.enum(['small', 'medium', 'large']),
+    order: z.number().optional(),
+  }),
+});
+
+const fellowCollection = defineCollection({
+  loader: glob({ pattern: ['*.md', '*.mdx'], base: 'src/fellows/posts' }),
+  schema: z.object({
+    name: z.string(),
+    image: z.string(),
+    order: z.number().optional(),
+  }),
+});
+
+const funderCollection = defineCollection({
+  loader: glob({ pattern: ['*.md', '*.mdx'], base: 'src/funders/posts' }),
+  schema: z.object({
+    name: z.string(),
+    logo: z.string(),
+    order: z.number().optional(),
+  }),
+});
+
 export const collections = {
   post: postCollection,
+  projects: projectCollection,
+  fellows: fellowCollection,
+  funders: funderCollection,
 };

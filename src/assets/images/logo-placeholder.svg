@@ -1,0 +1,9 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="100" r="90" fill="#0032a0" opacity="0.1"/>
+  <circle cx="100" cy="100" r="80" fill="none" stroke="#0032a0" stroke-width="3"/>
+  <text x="100" y="85" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#0032a0">PHL</text>
+  <text x="100" y="110" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#0032a0">Patent History</text>
+  <text x="100" y="125" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#0032a0">Lab</text>
+  <path d="M 60 145 L 100 155 L 140 145" stroke="#0032a0" stroke-width="2" fill="none"/>
+  <circle cx="100" cy="155" r="3" fill="#0032a0"/>
+</svg>

@@ -1,0 +1,68 @@
+---
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import Headline from '~/components/ui/Headline.astro';
+
+const {
+  title = await Astro.slots.render('title'),
+  subtitle = await Astro.slots.render('subtitle'),
+  tagline = await Astro.slots.render('tagline'),
+  items = [],
+
+  id,
+  isDark = false,
+  classes = {},
+  bg = await Astro.slots.render('bg'),
+} = Astro.props;
+---
+
+<WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-7xl mx-auto ${classes?.container ?? ''}`} bg={bg}>
+  <Headline title={title} subtitle={subtitle} tagline={tagline} classes={classes?.headline as Record<string, string>} />
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-grid">
+    {
+      items.map((item: any, index: number) => (
+        <a
+          href={item.link || '#'}
+          class="project-card group relative block rounded-lg overflow-hidden transition-all duration-300 hover:scale-105"
+          data-index={index}
+        >
+          <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
+            {item.image ? (
+              <img
+                src={item.image}
+                alt={item.title}
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+            ) : (
+              <div class="w-full h-full flex items-center justify-center text-6xl">
+                {item.icon || '🔬'}
+              </div>
+            )}
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div class="absolute bottom-0 left-0 right-0 p-6">
+              <h3 class="text-white text-xl font-bold mb-2">{item.title}</h3>
+              <p class="text-gray-200 text-sm line-clamp-2">{item.description}</p>
+            </div>
+          </div>
+          <div class="absolute inset-0 bg-white/10 dark:bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </a>
+      ))
+    }
+  </div>
+
+  <style>
+    #projects-grid {
+      transition: filter 0.3s ease;
+    }
+
+    #projects-grid:has(.project-card:hover) .project-card:not(:hover) {
+      filter: grayscale(100%) brightness(0.6);
+      transform: scale(0.98);
+    }
+
+    .project-card:hover {
+      z-index: 10;
+    }
+  </style>
+</WidgetWrapper>

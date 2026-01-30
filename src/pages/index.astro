@@ -1,399 +1,762 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-
-import Hero from '~/components/widgets/Hero.astro';
-import Note from '~/components/widgets/Note.astro';
-import Features from '~/components/widgets/Features.astro';
-import Features2 from '~/components/widgets/Features2.astro';
-import Steps from '~/components/widgets/Steps.astro';
-import Content from '~/components/widgets/Content.astro';
-import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
-import FAQs from '~/components/widgets/FAQs.astro';
-import Stats from '~/components/widgets/Stats.astro';
-import CallToAction from '~/components/widgets/CallToAction.astro';
+import { getCollection } from 'astro:content';
 
 const metadata = {
-  title: 'AstroWind — Free template for creating websites with Astro + Tailwind CSS',
+  title: 'French Patent History Lab',
   ignoreTitleTemplate: true,
 };
+
+// Get projects, fellows and funders from collections
+const projects = (await getCollection('projects'))
+  .sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
+
+const fellows = (await getCollection('fellows'))
+  .sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
+
+const funders = (await getCollection('funders'))
+  .sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
 ---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>French Patent History Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&family=Source+Code+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <style is:global>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<Layout metadata={metadata}>
-  <!-- Hero Widget ******************* -->
+    html {
+      scroll-behavior: smooth;
+    }
 
-  <Hero
-    actions={[
-      {
-        variant: 'primary',
-        text: 'Get template',
-        href: 'https://github.com/arthelokyo/astrowind',
-        target: '_blank',
-        icon: 'tabler:download',
-      },
-      { text: 'Learn more', href: '#features' },
-    ]}
-    image={{ src: '~/assets/images/hero-image.png', alt: 'AstroWind Hero Image' }}
-  >
-    <Fragment slot="title">
-      Free template for <span class="hidden xl:inline">creating websites with</span>
-      <span class="text-accent dark:text-white"> Astro 5.0</span> + Tailwind CSS
-    </Fragment>
+    body {
+      font-family: 'Source Code Pro', monospace;
+    }
 
-    <Fragment slot="subtitle">
-      <span class="hidden sm:inline">
-        <span class="font-semibold">AstroWind</span> is a free, customizable and production-ready template for Astro 5.0
-        + Tailwind CSS.</span
+    /* Fixed position small logo (digiTatti style) */
+    .fixed-logo {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      width: 20px;
+      height: 20px;
+      z-index: 1000;
+    }
+
+    .fixed-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .symbol-container {
+      margin-top: 23px;
+      margin-bottom: 10px;
+      width: 140px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated Logo Styles */
+    .logo-animated,
+    .logo-static {
+      width: 100%;
+      height: 100%;
+      max-width: 140px;
+      max-height: 140px;
+      object-fit: contain;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .hero-title {
+      font-size: 50pt;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      font-weight: 300;
+      color: #666;
+      margin-bottom: 3rem;
+      line-height: 1.8;
+      letter-spacing: 1px;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      cursor: pointer;
+    }
+
+    .scroll-indicator svg {
+      width: 30px;
+      height: 30px;
+      fill: #1a1a1a;
+    }
+
+    /* Section Styles - digiTatti style */
+    .title-section {
+      border-bottom: 1px solid #1a1a1a;
+      margin: 100px 5% 100px 5%;
+      font-size: 3.8em;
+      font-weight: 400;
+    }
+
+    /* About Section - digiTatti style: 100vh, narrow column */
+    .about-section {
+      min-height: 100vh;
+      font-size: 20pt;
+      text-align: center;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .about-content {
+      max-width: 60%;
+      margin: 0 auto;
+    }
+
+    /* Projects Section - digiTatti masonry style */
+    #projectsSection {
+      padding-bottom: 100px;
+      margin-bottom: 100px;
+    }
+
+    .projects-container {
+      padding: 0 !important;
+    }
+
+    /* Clearfix for float layout */
+    .projects-grid:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+
+    .grid-item {
+      float: left;
+      padding: 30px;
+      cursor: pointer;
+    }
+
+    .grid-item.small {
+      width: 20%;
+    }
+
+    .grid-item.medium {
+      width: 30%;
+    }
+
+    .grid-item.large {
+      width: 40%;
+    }
+
+    .grid-item img {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      filter: grayscale(100%);
+      transition: all 2s ease;
+    }
+
+    .grid-item:hover img {
+      filter: grayscale(0%);
+    }
+
+    .project-title {
+      font-size: 8pt;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (max-width: 767px) {
+      .grid-item.small,
+      .grid-item.medium,
+      .grid-item.large {
+        width: 50%;
+      }
+    }
+
+    @media (max-width: 575px) {
+      .grid-item.small,
+      .grid-item.medium,
+      .grid-item.large {
+        width: 100%;
+      }
+    }
+
+    /* Fellows Section */
+    .fellows-section {
+      /* No extra margin - title handles spacing */
+    }
+
+    .fellows-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 5%;
+      text-align: center;
+    }
+
+    .fellow-container {
+      display: inline-block;
+      width: 25%;
+      text-align: center;
+      cursor: pointer;
+      vertical-align: top;
+    }
+
+    .fellow-image {
+      display: block;
+      border-radius: 50%;
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .fellow-name {
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+
+    /* Funders Section */
+    .funders-section {
+      background: #fafafa;
+      margin-top: 100px;
+      padding-bottom: 100px;
+      padding-top: 100px;
+    }
+
+    .funders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 3rem;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 5%;
+    }
+
+    .funder-logo {
+      padding: 2rem;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+    }
+
+    .funder-logo img {
+      max-width: 180px;
+      filter: brightness(0) invert(0.15);
+    }
+
+    /* Contact Section - digiTatti style */
+    .contact-container {
+      padding-left: 5%;
+      padding-right: 5%;
+    }
+
+    .contact-title {
+      font-size: 14pt;
+      margin-bottom: 20px;
+    }
+
+    .form-control {
+      background-color: #F6F5F4;
+      border: none;
+      border-radius: 1px;
+      padding: 1rem;
+      font-family: 'Roboto', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    .form-control::placeholder {
+      color: #8C8179;
+    }
+
+    .form-control:focus {
+      outline: none;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    #formBtn {
+      background-color: white;
+      color: black;
+      border: 1px solid black;
+      border-radius: 1px;
+      padding: 10px 40px 10px 40px;
+      font-family: 'Roboto', sans-serif;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+
+    #address {
+      margin-top: 50px;
+    }
+
+    #address p {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 200px;
+      border-top: 1px solid #1a1a1a;
+      padding: 10px 1%;
+      height: 90px;
+    }
+
+    .footer-content {
+      text-align: center;
+    }
+
+    .footer-logo {
+      margin-bottom: 30px;
+    }
+
+    .footer-logo img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .footer-text {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+      font-size: 10pt;
+      margin-top: 30px;
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1050;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal.show {
+      display: block;
+    }
+
+    .modal-dialog {
+      max-width: 1000px;
+      margin: 30px auto;
+    }
+
+    .modal-content {
+      background: #fff;
+      min-height: 70vh;
+      padding: 80px;
+      border: 0;
+      border-radius: 0;
+    }
+
+    .modal-header {
+      border-bottom: 0;
+      padding: 0;
+    }
+
+    .modal-header .close {
+      font-size: 50px;
+      font-weight: 100;
+      color: #1a1a1a;
+      margin-right: -80px;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+
+    .modal-header .close:hover {
+      opacity: 1;
+    }
+
+    .modal-body {
+      padding: 0;
+    }
+
+    #fellowModalImage {
+      border-radius: 250px;
+      width: 300px;
+      height: 300px;
+      object-fit: cover;
+      margin: 0 auto 50px auto;
+      display: block;
+    }
+
+    #fellowModalName {
+      font-size: 20pt;
+      font-family: 'Roboto', sans-serif;
+      font-weight: bold;
+    }
+
+    #fellowModalBio {
+      font-family: 'Roboto', sans-serif;
+      text-align: justify;
+      font-size: 12pt;
+      letter-spacing: 1px;
+      line-height: 18pt;
+      margin-top: 50px;
+    }
+
+    #fellowModalBio:first-letter {
+      color: #000000;
+      float: left;
+      font-family: 'Baskerville', serif;
+      font-size: 75px;
+      line-height: 60px;
+      padding-top: 4px;
+      padding-right: 8px;
+      padding-left: 3px;
+    }
+
+    #projectModalImage {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      margin-bottom: 40px;
+    }
+
+    #projectModalTitle {
+      margin-top: 40px;
+      font-size: 17pt;
+      font-weight: 300;
+    }
+
+    #projectModalDescription {
+      font-size: 10pt;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      font-family: 'Roboto', sans-serif;
+      letter-spacing: 1px;
+      line-height: 18pt;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 30pt;
+      }
+
+      .about-content {
+        max-width: 90%;
+        font-size: 14pt;
+      }
+
+      .fellow-container {
+        width: 50%;
+      }
+
+      .fellow-image {
+        width: 150px;
+        height: 150px;
+      }
+
+      .modal-content {
+        padding: 30px;
+      }
+
+      #fellowModalImage {
+        width: 200px;
+        height: 200px;
+      }
+
+      .title-section {
+        font-size: 2.5em;
+        margin: 40px 5%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Fixed position small logo -->
+  <div class="fixed-logo">
+    <img src="/images/fleur_lis_technical_drawing_logo.png" alt="Fleur-de-lis Logo" />
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="symbol-container">
+      <!-- Animated Logo: Plays MP4 once on load, then switches to PNG -->
+      <video
+        id="heroLogoVideo"
+        class="logo-animated"
+        autoplay
+        muted
+        playsinline
+        preload="auto"
+        style="display: block;"
       >
-      <span class="block mb-1 sm:hidden font-bold text-blue-600">AstroWind: Production-ready.</span>
-      Suitable for Startups, Small Business, SaaS websites, Professional Portfolios, Marketing websites, Landing Pages &
-      Blogs.
-    </Fragment>
-  </Hero>
+        <source src="/images/fleur_lis_technical_drawing_logo.mp4" type="video/mp4">
+      </video>
+      <img
+        id="heroLogoImage"
+        class="logo-static"
+        src="/images/fleur_lis_technical_drawing_logo.png"
+        alt="French Patent History Lab Logo"
+        style="display: none;"
+      />
+    </div>
 
-  <!-- Note Widget ******************* -->
+    <h1 class="hero-title">French Patent History Lab</h1>
+    <p class="hero-subtitle">
+      the Lund University<br />
+      research lab for<br />
+      French historical patents
+    </p>
 
-  <Note title="Philosophy:" description="Simplicity, Best Practices and High Performance" />
+    <div class="scroll-indicator" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+      </svg>
+    </div>
+  </section>
 
-  <!-- Features Widget *************** -->
+  <!-- About Section -->
+  <section id="about" class="about-section">
+    <div class="about-content">
+      The French Patent History Lab serves as a research center dedicated to the study of French historical patents from the nineteenth century. We explore how intellectual property shaped technological progress during one of the most innovative periods in history.
+    </div>
+  </section>
 
-  <Features
-    id="features"
-    tagline="Features"
-    title="What you get with AstroWind"
-    subtitle="One of the most professional and comprehensive templates currently on the market. Most starred & forked Astro theme in 2022, 2023 and 2024."
-    items={[
-      {
-        title: 'Astro + Tailwind CSS Integration',
-        description:
-          'A seamless integration between two great frameworks that offer high productivity, performance and versatility.',
-        icon: 'tabler:brand-tailwind',
-      },
-      {
-        title: 'Ready-to-use Components',
-        description:
-          'Widgets made with Tailwind CSS ready to be used in Marketing Websites, SaaS, Blogs, Personal Profiles, Small Business...',
-        icon: 'tabler:components',
-      },
-      {
-        title: 'Best Practices',
-        description:
-          'Creating secure, efficient, and user-friendly websites that deliver exceptional experiences and lasting value.',
-        icon: 'tabler:list-check',
-      },
-      {
-        title: 'Excellent Page Speed',
-        description:
-          'Having a good page speed impacts organic search ranking, improves user experience (UI/UX) and increase conversion rates.',
-        icon: 'tabler:rocket',
-      },
-      {
-        title: 'Search Engine Optimization (SEO)',
-        description:
-          "SEO lies in its ability to enhance a website's visibility, driving organic traffic and enabling it to reach a wider audience.",
-        icon: 'tabler:arrows-right-left',
-      },
-      {
-        title: 'Open to new ideas and contributions',
-        description:
-          'Embracing a culture that is open to new ideas and contributions is integral fostering innovation, collaboration, and a dynamic user experience.',
-        icon: 'tabler:bulb',
-      },
-    ]}
-  />
+  <!-- Projects Section -->
+  <section id="projectsSection">
+    <h2 class="title-section">Projects</h2>
 
-  <!-- Content Widget **************** -->
+    <div class="projects-container">
+      <div class="projects-grid">
+        {projects.map((project, index) => (
+          <div class={`grid-item ${project.data.size}`} data-toggle="modal" data-target={`#projectModal${index}`}>
+            <img src={project.data.image} alt={project.data.title}>
+            <div class="project-title">{project.data.title}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 
-  <Content
-    isReversed
-    tagline="Inside template"
-    title="AstroWind's Blueprint: Fun Meets Functionality!"
-    items={[
-      {
-        title: 'Built on top of Astro 5.0',
-        description:
-          'Benefiting from the performance and developer-friendly features of this modern static site generator.',
-      },
-      {
-        title: 'Styled using Tailwind CSS',
-        description:
-          'Facilitating rapid design and consistent styling with this highly popular utility-first CSS framework.',
-      },
-      {
-        title: 'Cross-browser compatibility',
-        description:
-          'Ensure your website looks and functions consistently across various web browsers, delivering a seamless experience to all users.',
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      alt: 'Colorful Image',
-    }}
-  >
-    <Fragment slot="content">
-      <h3 class="text-2xl font-bold tracking-tight dark:text-white sm:text-3xl mb-2">Building on modern foundations</h3>
-      Gain a competitive advantage by incorporating industry leading practices
-    </Fragment>
+  <!-- Fellows Section -->
+  <section id="fellows" class="fellows-section">
+    <h2 class="title-section">Fellows</h2>
 
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content>
+    <div class="fellows-grid">
+      {fellows.map((fellow, index) => (
+        <div class="fellow-container" data-toggle="modal" data-target={`#fellowModal${index}`}>
+          <img class="fellow-image" src={fellow.data.image} alt={fellow.data.name}>
+          <div class="fellow-name">{fellow.data.name}</div>
+        </div>
+      ))}
+    </div>
+  </section>
 
-  <!-- Content Widget **************** -->
+  <!-- Funders Section -->
+  <section id="funders" class="funders-section">
+    <h2 class="title-section">Funders</h2>
 
-  <Content
-    isAfterContent
-    items={[
-      {
-        title: 'High level of customization',
-        description: `Tailor the template effortlessly to match your brand's identity and requirements, making your website distinct and saving you time.`,
-      },
-      {
-        title: 'Multiple layout possibilities',
-        description:
-          'Explore various layout options to find the structure that best presents your content, enhancing user engagement and navigation.',
-      },
-      {
-        title: 'Fully responsive design',
-        description:
-          "Ensure your website's optimal performance on various devices and screen sizes, providing a consistent and enjoyable user experience.",
-      },
-      {
-        title: 'Integration of media',
-        description:
-          'Seamlessly incorporate images, videos, and multimedia elements that enhance your content and engage visitors effectively.',
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1600132806370-bf17e65e942f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2194&q=80',
-      alt: 'Blueprint Image',
-    }}
-  >
-    <Fragment slot="content">Ensure your online presence truly represents you.</Fragment>
+    <div class="funders-grid">
+      {funders.map((funder) => (
+        <div class="funder-logo">
+          <img src={funder.data.logo} alt={funder.data.name} />
+        </div>
+      ))}
+    </div>
+  </section>
 
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content>
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2 class="title-section">Get in touch</h2>
 
-  <!-- Content Widget **************** -->
+    <div class="contact-container">
+      <p class="contact-title">Please use the following form to reach out to us!</p>
 
-  <Content
-    isReversed
-    isAfterContent
-    items={[
-      {
-        title: 'Enhanced user engagement',
-        description:
-          'Captivate your audience with interactive elements, intuitive navigation, and visually appealing layouts, encouraging longer visits.',
-      },
-      {
-        title: 'Continuous improvement',
-        description:
-          'Ensure your website stays aligned with the latest trends and technologies through regular updates and enhancements.',
-      },
-      {
-        title: 'Time and resource efficiency',
-        description:
-          'Skip the time-consuming process of building a website from scratch and launch your online presence sooner with AstroWind.',
-      },
-      {
-        title: 'Community support',
-        description: `Join the growing AstroWind community for insights, resources, and assistance, ensuring you're never alone on your web development journey.`,
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1611462985358-60d3498e0364?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      alt: 'Astronauts Image',
-    }}
-  >
-    <Fragment slot="content">Designed to foster growth and success.</Fragment>
+      <form id="contactForm">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Name" required>
+        </div>
+        <div class="form-group">
+          <input type="email" class="form-control" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+          <select class="form-control" required>
+            <option value="">Select a subject</option>
+            <option value="general">General Inquiry</option>
+            <option value="collaboration">Research Collaboration</option>
+            <option value="data">Data Access Request</option>
+            <option value="media">Media Inquiry</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" placeholder="Message" rows="6" required></textarea>
+        </div>
+        <button type="submit" id="formBtn">Send Message</button>
+      </form>
 
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Content>
+      <div id="address">
+        <p><strong>French Patent History Lab</strong><br>
+        Department of Economic History<br>
+        Lund University School of Economics and Management<br>
+        Lund, Sweden</p>
+      </div>
+    </div>
+  </section>
 
-  <!-- Steps Widget ****************** -->
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <img src="/images/fleur_lis_technical_drawing_logo.png" alt="French Patent History Lab Logo" />
+      </div>
 
-  <Steps
-    title="Get your dream website up and running in no time with AstroWind."
-    items={[
-      {
-        title: 'Step 1: <span class="font-medium">Download</span>',
-        description:
-          "Kickstart with GitHub! Either fork the AstroWind template or simply click 'Use this template'. Your canvas awaits, ready for your digital masterpiece. In just a few clicks, you've already set the foundation.",
-        icon: 'tabler:package',
-      },
-      {
-        title: 'Step 2: <span class="font-medium">Add content</span>',
-        description:
-          "Pour your vision into it. Add images, text, and all that jazz to breathe life into your digital space. Remember, it's the content that tells your story, so make it captivating.",
-        icon: 'tabler:letter-case',
-      },
-      {
-        title: 'Step 3: <span class="font-medium">Customize styles</span>',
-        description:
-          'Give it your personal touch. Tailor colors, fonts, and layouts until it feels just right. Your unique flair, amplified by AstroWind! Precision in design ensures a seamless user experience.',
-        icon: 'tabler:paint',
-      },
-      {
-        title: 'Ready!',
-        icon: 'tabler:check',
-      },
-    ]}
-    image={{
-      src: 'https://images.unsplash.com/photo-1616198814651-e71f960c3180?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80',
-      alt: 'Steps image',
-    }}
-  />
+      <div class="footer-text">
+        French Patent History Lab · Department of Economic History · Lund University School of Economics and Management<br>
+        Lund, Sweden<br><br>
+        © Lund University
+      </div>
+    </div>
+  </footer>
 
-  <!-- Features2 Widget ************** -->
+  <!-- Fellow Modals -->
+  {fellows.map((fellow, index) => (
+    <div class="modal" id={`fellowModal${index}`} tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <img id="fellowModalImage" src={fellow.data.image} alt={fellow.data.name}>
+            <div id="fellowModalName">{fellow.data.name}</div>
+            <div id="fellowModalBio" set:html={fellow.rendered?.html} />
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
 
-  <Features2
-    title="Most used widgets"
-    subtitle="Provides frequently used components for building websites using Tailwind CSS"
-    tagline="Components"
-    items={[
-      {
-        title: 'Headers',
-        description: "Ever tried driving without GPS? Boom! That's why websites need headers for direction.",
-        icon: 'flat-color-icons:template',
-      },
-      {
-        title: 'Heros',
-        description:
-          "Picture a superhero landing – epic, right? That's the job of a Hero section, making grand entrances!",
-        icon: 'flat-color-icons:gallery',
-      },
-      {
-        title: 'Features',
-        description:
-          'Where websites strut their stuff and show off superpowers. No holding back on the bragging rights here!',
-        icon: 'flat-color-icons:approval',
-      },
-      {
-        title: 'Content',
-        description:
-          "Dive into the meat and potatoes of a site; without it, you'd just be window shopping. Content is king.",
-        icon: 'flat-color-icons:document',
-      },
-      {
-        title: 'Call-to-Action',
-        description:
-          'That enthusiastic friend who\'s always urging, "Do it! Do it!"? Yeah, that\'s this button nudging you towards adventure.',
-        icon: 'flat-color-icons:advertising',
-      },
-      {
-        title: 'Pricing',
-        description: 'Behold the dessert menu of the website world. Tempting choices await, can you resist?',
-        icon: 'flat-color-icons:currency-exchange',
-      },
-      {
-        title: 'Testimonial',
-        description: 'Step into the gossip corner! Here, other visitors spill the beans and share the juicy details.',
-        icon: 'flat-color-icons:voice-presentation',
-      },
-      {
-        title: 'Contact',
-        description:
-          'Like a digital mailbox, but faster! Drop a line, ask a question, or send a virtual high-five. Ding! Message in.',
-        icon: 'flat-color-icons:business-contact',
-      },
-      {
-        title: 'Footers',
-        description: "The footer's like the credits of a movie but sprinkled with easter eggs. Time to hunt!",
-        icon: 'flat-color-icons:database',
-      },
-    ]}
-  >
-    <Fragment slot="bg">
-      <div class="absolute inset-0 bg-blue-50 dark:bg-transparent"></div>
-    </Fragment>
-  </Features2>
+  <!-- Project Modals -->
+  {projects.map((project, index) => (
+    <div class="modal" id={`projectModal${index}`} tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <img id="projectModalImage" src={project.data.image} alt={project.data.title}>
+            <div id="projectModalTitle">{project.data.title}</div>
+            <div id="projectModalDescription" set:html={project.rendered?.html} />
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
 
-  <!-- HighlightedPosts Widget ******* -->
+  <script>
+    // Simple modal functionality
+    document.querySelectorAll('[data-toggle="modal"]').forEach(trigger => {
+      trigger.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-target');
+        const modal = document.querySelector(targetId);
+        if (modal) {
+          modal.classList.add('show');
+        }
+      });
+    });
 
-  <BlogLatestPosts
-    title="Find out more content in our Blog"
-    information={`The blog is used to display AstroWind documentation.
-                        Each new article will be an important step that you will need to know to be an expert in creating a website using Astro + Tailwind CSS.
-                        Astro is a very interesting technology. Thanks.
-                `}
-  />
+    document.querySelectorAll('.close').forEach(closeBtn => {
+      closeBtn.addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        if (modal) {
+          modal.classList.remove('show');
+        }
+      });
+    });
 
-  <!-- FAQs Widget ******************* -->
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.classList.remove('show');
+        }
+      });
+    });
 
-  <FAQs
-    title="Frequently Asked Questions"
-    subtitle="Dive into the following questions to gain insights into the powerful features that AstroWind offers and how it can elevate your web development journey."
-    tagline="FAQs"
-    classes={{ container: 'max-w-6xl' }}
-    items={[
-      {
-        title: 'Why AstroWind?',
-        description:
-          "Michael Knight a young loner on a crusade to champion the cause of the innocent. The helpless. The powerless in a world of criminals who operate above the law. Here he comes Here comes Speed Racer. He's a demon on wheels.",
-      },
-      {
-        title: 'What do I need to start?',
-        description:
-          'Space, the final frontier. These are the voyages of the Starship Enterprise. Its five-year mission: to explore strange new worlds. Many say exploration is part of our destiny, but it’s actually our duty to future generations.',
-      },
-      {
-        title: 'How to install the Astro + Tailwind CSS template?',
-        description:
-          "Well, the way they make shows is, they make one show. That show's called a pilot. Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows.",
-      },
-      {
-        title: "What's something that you don't understand?",
-        description:
-          "A flower in my garden, a mystery in my panties. Heart attack never stopped old Big Bear. I didn't even know we were calling him Big Bear.",
-      },
-      {
-        title: 'What is something that you would like to try again?',
-        description:
-          "A business big enough that it could be listed on the NASDAQ goes belly up. Disappears! It ceases to exist without me. No, you clearly don't know who you're talking to, so let me clue you in.",
-      },
-      {
-        title: 'If you could only ask one question to each person you meet, what would that question be?',
-        description:
-          "This is not about revenge. This is about justice. A lot of things can change in twelve years, Admiral. Well, that's certainly good to know. About four years. I got tired of hearing how young I looked.",
-      },
-    ]}
-  />
+    // Form submission
+    const form = document.getElementById('contactForm');
+    form?.addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you for your message! We will get back to you soon.');
+      (this as HTMLFormElement).reset();
+    });
 
-  <!-- Stats Widget ****************** -->
+    // Animated Logo: Switch from video to static image after playback
+    const logoVideo = document.getElementById('heroLogoVideo') as HTMLVideoElement;
+    const logoImage = document.getElementById('heroLogoImage') as HTMLImageElement;
 
-  <Stats
-    stats={[
-      { title: 'Downloads', amount: '132K' },
-      { title: 'Stars', amount: '24.8K' },
-      { title: 'Forks', amount: '10.3K' },
-      { title: 'Users', amount: '48.4K' },
-    ]}
-  />
+    if (logoVideo && logoImage) {
+      // When video ends, switch to static image
+      logoVideo.addEventListener('ended', function() {
+        logoVideo.style.display = 'none';
+        logoImage.style.display = 'block';
+      });
 
-  <!-- CallToAction Widget *********** -->
+      // Fallback: If video fails to load, show static image
+      logoVideo.addEventListener('error', function() {
+        logoVideo.style.display = 'none';
+        logoImage.style.display = 'block';
+      });
 
-  <CallToAction
-    actions={[
-      {
-        variant: 'primary',
-        text: 'Get template',
-        href: 'https://github.com/arthelokyo/astrowind',
-        target: '_blank',
-        icon: 'tabler:download',
-      },
-    ]}
-  >
-    <Fragment slot="title">
-      Astro&nbsp;+&nbsp;<br class="block sm:hidden" /><span class="sm:whitespace-nowrap">Tailwind CSS</span>
-    </Fragment>
+      // For users who prefer reduced motion, skip animation
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        logoVideo.style.display = 'none';
+        logoImage.style.display = 'block';
+      }
 
-    <Fragment slot="subtitle">
-      Be very surprised by these huge fake numbers you are seeing on this page. <br class="hidden md:inline" />Don't
-      waste more time! :P
-    </Fragment>
-  </CallToAction>
-</Layout>
+      // On mobile, skip animation for better performance
+      if (window.innerWidth < 768) {
+        logoVideo.style.display = 'none';
+        logoImage.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

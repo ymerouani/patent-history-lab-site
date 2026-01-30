@@ -1,0 +1,52 @@
+---
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import Headline from '~/components/ui/Headline.astro';
+
+const {
+  title = await Astro.slots.render('title'),
+  subtitle = await Astro.slots.render('subtitle'),
+  tagline = await Astro.slots.render('tagline'),
+  items = [],
+
+  id,
+  isDark = false,
+  classes = {},
+  bg = await Astro.slots.render('bg'),
+} = Astro.props;
+---
+
+<WidgetWrapper id={id} isDark={isDark} containerClass={`max-w-6xl mx-auto ${classes?.container ?? ''}`} bg={bg}>
+  <Headline title={title} subtitle={subtitle} tagline={tagline} classes={classes?.headline as Record<string, string>} />
+
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 items-center justify-items-center">
+    {
+      items.map((item: any) => (
+        <a
+          href={item.link || '#'}
+          class="group flex flex-col items-center justify-center p-6 rounded-lg transition-all duration-300 hover:scale-105 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+          target={item.target || '_blank'}
+          rel={item.rel || 'noopener noreferrer'}
+        >
+          <div class="w-32 h-32 flex items-center justify-center mb-3">
+            {item.image ? (
+              <img
+                src={item.image}
+                alt={item.name}
+                class="max-w-full max-h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+              />
+            ) : (
+              <div class="text-4xl text-gray-400 group-hover:text-blue-500 transition-colors duration-300 font-bold text-center">
+                {item.name}
+              </div>
+            )}
+          </div>
+          {item.showName !== false && (
+            <p class="text-sm text-gray-600 dark:text-gray-400 text-center group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+              {item.name}
+            </p>
+          )}
+        </a>
+      ))
+    }
+  </div>
+</WidgetWrapper>

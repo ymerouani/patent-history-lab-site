@@ -23,6 +23,7 @@ const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroInteg
 
 export default defineConfig({
   output: 'static',
+  base: '/patent-history-lab-site/',
 
   integrations: [
     tailwind({
