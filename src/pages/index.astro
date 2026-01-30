@@ -7,6 +7,9 @@ const metadata = {
   ignoreTitleTemplate: true,
 };
 
+// Get the base path from config
+const basePath = '/patent-history-lab-site';
+
 // Get projects, fellows and funders from collections
 const projects = (await getCollection('projects'))
   .sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
@@ -511,7 +514,7 @@ const funders = (await getCollection('funders'))
 <body>
   <!-- Fixed position small logo -->
   <div class="fixed-logo">
-    <img src="/images/fleur_lis_technical_drawing_logo.png" alt="Fleur-de-lis Logo" />
+    <img src={`${basePath}/images/fleur_lis_technical_drawing_logo.png`} alt="Fleur-de-lis Logo" />
   </div>
 
   <!-- Hero Section -->
@@ -527,12 +530,12 @@ const funders = (await getCollection('funders'))
         preload="auto"
         style="display: block;"
       >
-        <source src="/images/fleur_lis_technical_drawing_logo.mp4" type="video/mp4">
+        <source src={`${basePath}/images/fleur_lis_technical_drawing_logo.mp4`} type="video/mp4">
       </video>
       <img
         id="heroLogoImage"
         class="logo-static"
-        src="/images/fleur_lis_technical_drawing_logo.png"
+        src={`${basePath}/images/fleur_lis_technical_drawing_logo.png`}
         alt="French Patent History Lab Logo"
         style="display: none;"
       />
@@ -644,7 +647,7 @@ const funders = (await getCollection('funders'))
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-logo">
-        <img src="/images/fleur_lis_technical_drawing_logo.png" alt="French Patent History Lab Logo" />
+        <img src={`${basePath}/images/fleur_lis_technical_drawing_logo.png`} alt="French Patent History Lab Logo" />
       </div>
 
       <div class="footer-text">

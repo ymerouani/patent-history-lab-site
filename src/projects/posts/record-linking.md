@@ -1,7 +1,7 @@
 ---
 title: "Record Linking the French Inventor"
 description: "reconstructs distinct inventor identities from nearly half a million nineteenth-century French patent records by combining archival transcription, probabilistic record linkage, and modern language model embeddings to resolve individuals and firms across fragmented historical data."
-image: "/images/projects/Record-Linking_2025-08-27.png"
+image: "/patent-history-lab-site/images/projects/Record-Linking_2025-08-27.png"
 size: "small"
 order: 2
 ---

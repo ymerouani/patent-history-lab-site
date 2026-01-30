@@ -1,7 +1,7 @@
 ---
 title: "Rediscovering the Lives Behind the Patents"
 description: "Examining the role of female inventors in the nineteenth-century French patent system and legal barriers to participation."
-image: "/images/projects/illustration_demographic.png"
+image: "/patent-history-lab-site/images/projects/illustration_demographic.png"
 size: "medium"
 order: 3
 ---
