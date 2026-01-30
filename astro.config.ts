@@ -54,18 +54,18 @@ export default defineConfig({
       })
     ),
 
-    compress({
-      CSS: true,
-      HTML: {
-        'html-minifier-terser': {
-          removeAttributeQuotes: false,
-        },
-      },
-      Image: false,
-      JavaScript: true,
-      SVG: false,
-      Logger: 1,
-    }),
+    // compress({
+    //   CSS: true,
+    //   HTML: {
+    //     'html-minifier-terser': {
+    //       removeAttributeQuotes: false,
+    //     },
+    //   },
+    //   Image: false,
+    //   JavaScript: true,
+    //   SVG: false,
+    //   Logger: 1,
+    // }),
 
     astrowind({
       config: './src/config.yaml',
@@ -82,6 +82,7 @@ export default defineConfig({
   },
 
   vite: {
+    base: '/patent-history-lab-site/',
     resolve: {
       alias: {
         '~': path.resolve(__dirname, './src'),
